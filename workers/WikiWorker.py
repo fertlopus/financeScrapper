@@ -1,11 +1,34 @@
+import threading
 import requests
 from bs4 import BeautifulSoup
 
 
+class WikiWorkerMasterScheduler(threading.Thread):
+    def __init__(self, output_queue, **kwargs):
+        if 'input_queue' in kwargs:
+            kwargs.pop('input_queue')
+        self._input_values = kwargs.pop('entries')
+        temp_queue = output_queue
+        if not isinstance(temp_queue, list):
+            temp_queue = [temp_queue]
+        self._output_queue = temp_queue
+        super(WikiWorkerMasterScheduler, self).__init__(**kwargs)
+        self.start()
+
+    def run(self):
+        for entry in self._input_values:
+            wikiWorker = WikiWorker(entry)
+            ticker_counter = 0
+            for ticker in wikiWorker.get_sp500_companies():
+                for output_queue in self._output_queue:
+                    output_queue.put(ticker)
+                ticker_counter += 1
+
+
 class WikiWorker(object):
-    def __init__(self):
+    def __init__(self, url):
         # URL to the Wikipedia page with S&P500 companies list (FYI: link can be changed)
-        self._url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+        self._url = url
 
     @staticmethod
     def _get_companies_symbols(html_page):
