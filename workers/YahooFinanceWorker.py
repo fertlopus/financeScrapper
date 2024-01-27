@@ -49,6 +49,7 @@ class YahooFinanceWorker:
         response = requests.get(self._get_url)
         if response.status_code == 200:
             html_content = html.fromstring(response.text)
+            # Check the url (XPATH) for the price on web service. It may be changed
             price = html_content.xpath('//*[@id="quote-summary"]/div[1]/table/tbody/tr[1]/td[2]')[0].text
             price = float(price.replace(',', ''))
             return price
