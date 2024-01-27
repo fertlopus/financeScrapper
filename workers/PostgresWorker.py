@@ -7,6 +7,8 @@ from sqlalchemy.sql import text
 
 class PostgresMasterScheduler(threading.Thread):
     def __init__(self, input_queue, **kwargs):
+        if 'output_queue' in kwargs:
+            kwargs.pop('output_queue', None)
         super(PostgresMasterScheduler, self).__init__(**kwargs)
         self._input_queue = input_queue
         self.start()
