@@ -1,0 +1,30 @@
+queues:
+  - name: TickerQueue
+    description: Symbols collected from Wikipedia list of SP500 to be scrapped from yahoo finance service
+
+  - name: PostgresQueue
+    description: Data to be uploaded to the database
+
+workers:
+  - name: WikiWorker
+    description: Scrapping wiki page for symbols
+    location: workers.WikiWorker
+    class: WikiWorker
+    input_values:
+      - 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+    output_queues:
+      - TickerQueue
+
+  - name: YahooFinanceWorker
+    description: Scraps data from stock ticker from yahoo finance web service
+    location: workers.YahooFinanceWorker
+    class: YahooFinanceScheduler
+    input_queue: TickerQueue
+    output_queues:
+      - PostgresQueue
+
+  - name: PostgresWorker
+    description: Uploads to the db scrapped data
+    location: workers.PostgresWorker
+    class: PostgresMasterScheduler
+    input_queue: PostgresQueue
