@@ -9,7 +9,8 @@ workers:
   - name: WikiWorker
     description: Scrapping wiki page for symbols
     location: workers.WikiWorker
-    class: WikiWorker
+    class: WikiWorkerMasterScheduler
+    instance: 1
     input_values:
       - 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
     output_queues:
@@ -18,6 +19,7 @@ workers:
   - name: YahooFinanceWorker
     description: Scraps data from stock ticker from yahoo finance web service
     location: workers.YahooFinanceWorker
+    instances: 2
     class: YahooFinanceScheduler
     input_queue: TickerQueue
     output_queues:
@@ -28,3 +30,4 @@ workers:
     location: workers.PostgresWorker
     class: PostgresMasterScheduler
     input_queue: PostgresQueue
+    instances: 6
