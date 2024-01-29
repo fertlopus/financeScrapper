@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+beautifulsoup4 = "*"
+fastapi = "*"
+uvicorn = "*"
+pydantic = "*"
+aiohttp = "*"
+sqlalchemy = "*"
+psycopg2 = "*"
+lxml = "*"
+psycopg2-binary = "*"
+pyyaml = "*"
+
+[dev-packages]
+pytest = "*"
+mypy = "*"
+pytest-asyncio = "*"
+responses = "*"
+aioresponses = "*"
+alembic = "*"
+isort = "*"
+
+[requires]
+python_version = "3.11"
